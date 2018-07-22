@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.1.1" />
+    <PackageReference Include="NEST" Version="6.2.0" />
+    <PackageReference Include="NEST.JsonNetSerializer" Version="6.2.0" />
+    <PackageReference Include="Serilog" Version="2.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EventSourcing.Data.Model\EventSourcing.Data.Model.csproj" />
+    <ProjectReference Include="..\EventSourcing.Domain\EventSourcing.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

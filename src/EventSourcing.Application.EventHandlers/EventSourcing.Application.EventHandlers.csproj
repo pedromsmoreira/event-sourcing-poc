@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EventSourcing.Application.Events\EventSourcing.Application.Events.csproj" />
+    <ProjectReference Include="..\EventSourcing.Application.Queries\EventSourcing.Application.Queries.csproj" />
+    <ProjectReference Include="..\EventSourcing.Persistence.ElasticSearch\EventSourcing.Persistence.ElasticSearch.csproj" />
+  </ItemGroup>
+
+</Project>

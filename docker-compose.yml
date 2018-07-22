@@ -1,0 +1,60 @@
+version: '2.0'
+services:
+  app:
+    build: .
+    container_name: event-sourcing-poc
+    environment:
+      - ASPNETCORE_URLS=http://*:5000
+    ports:
+      - 5000:5000
+    depends_on:
+      - eventstore
+    networks:
+      - simplenet
+
+  eventstore:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      - MONGODB_USER="username" 
+      - MONGODB_PASS="password" 
+      - MONGO_DATA_DIR=/data/db
+    volumes:
+      - ./data/db:/data/db
+    ports:
+        - 27017:27017
+    networks:
+      - simplenet
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      - discovery.type=single-node
+    volumes:
+      - ./esdata:/usr/share/elasticsearch/data
+    networks:
+      - simplenet
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.2.4
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      XPACK_SECURITY_ENABLED: 'false'
+    ports:
+      - 5601:5601
+    links:
+      - elasticsearch
+    networks:
+      - simplenet
+
+networks:
+  simplenet:
+    driver: bridge
