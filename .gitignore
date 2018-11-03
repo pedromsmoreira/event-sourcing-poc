@@ -289,5 +289,5 @@ __pycache__/
 *.xsd.cs
 
 # data storages
-./data/db/*
-./esdata/*
+*data/db/*
+*esdata/**
