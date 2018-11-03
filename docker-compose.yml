@@ -14,7 +14,9 @@ services:
     image: mongo:3.6.1
     container_name: mongodb
     environment:
-      - AUTH=no
+      - MONGO_INITDB_ROOT_USERNAME=username
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=eventstore
     volumes:
       - mongodata:/data/db
     ports:
