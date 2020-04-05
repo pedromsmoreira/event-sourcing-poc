@@ -10,7 +10,7 @@
     using Serilog.Filters;
     using Serilog.Sinks.Elasticsearch;
 
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

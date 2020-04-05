@@ -68,7 +68,7 @@
         {
             services.AddScoped<IUsersQueryHandlerAsync, UsersQueryHandlerAsync>();
             services.AddScoped<IEventsQueryHandlerAsync, EventsQueryHandlerAsync>();
-            services.AddScoped<IUserCommandsProcessor, UsersCommandsProcessor>();
+            services.AddScoped<IUserCommandsProcessor, StoreAndPublishUsersCommandsProcessor>();
             services.AddScoped<ISearchQueryHandlerAsync, SearchQueryHandlerAsync>();
 
             return services;
@@ -79,9 +79,13 @@
             services.AddTransient<IDependencyResolver>(c => new AspNetCoreDependencyResolver(services));
 
             services.AddSingleton<IMediator, Mediator>();
+
+            // non messaging notification
             services.AddScoped<INotificationHandlerAsync<UserCreatedV1>, UserCreatedNotificationHandler>();
             services.AddScoped<INotificationHandlerAsync<UserDeletedV1>, UserDeletedNotificationHandler>();
             services.AddScoped<INotificationHandlerAsync<UserUpdatedV1>, UserUpdatedNotificationHandler>();
+
+            // messaging notification preparing for branching by abstraction
 
             return services;
         }

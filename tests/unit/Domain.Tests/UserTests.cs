@@ -136,12 +136,12 @@ namespace Domain.Tests
         {
             // Arrange
             var sut = new User("name", "job");
-
-            // Act
             sut.MarkAsDeleted();
 
-            // Assert
+            // Act
             sut.LoadFromHistory(sut.GetUncommitedChanges());
+
+            // Assert
             sut.IsDeleted.Should().BeTrue();
         }
     }

@@ -11,8 +11,6 @@
 
     using Microsoft.AspNetCore.Mvc;
 
-    using Serilog;
-
     [Produces("application/json")]
     [Route("users")]
     public class UserController : Controller
@@ -35,39 +33,12 @@
         [Route("{id}")]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
-            Log.Information(
-                "Incoming Request for Id. Data: {@data}",
-                new
-                {
-                    CorrelationId = this.correlationContext.CorrelationContext.CorrelationId,
-                    AggregateId = id
-                });
-
             var user = await this.queryHandlerAsync.HandleAsync(new GetUserByIdQuery(id)).ConfigureAwait(false);
 
             if (user.IsNull())
             {
-                Log.Information(
-                    "User was NOT FOUND. Data: {@data}",
-                    new
-                    {
-                        CorrelationId = this.correlationContext.CorrelationContext.CorrelationId,
-                        AggregateId = id
-                    });
-
                 return this.NotFound();
             }
-
-            Log.Information(
-                "User was FOUND. User. Data: {@data}",
-                new
-                {
-                    CorrelationId = this.correlationContext.CorrelationContext.CorrelationId,
-                    Name = user.Name,
-                    Job = user.Job,
-                    AggregateId = user.Id,
-                    IsDeleted = user.IsDeleted
-                });
 
             return this.Ok(user.ToDto());
         }

@@ -40,15 +40,12 @@
 
             var db = client.GetDatabase(config.DatabaseName);
 
-            if (CollectionExists(db, CollectionName))
-            {
-                this.collection = db.GetCollection<EventStream>(CollectionName, collectionOptions);
-            }
-            else
+            if (!CollectionExists(db, CollectionName))
             {
                 db.CreateCollection(CollectionName);
-                this.collection = db.GetCollection<EventStream>(CollectionName, collectionOptions);
             }
+
+            this.collection = db.GetCollection<EventStream>(CollectionName, collectionOptions);
         }
 
         public async Task SaveEvents(Guid aggregateId, IReadOnlyList<IDomainEvent> uncommittedChanges)

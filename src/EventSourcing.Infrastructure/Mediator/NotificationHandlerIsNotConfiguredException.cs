@@ -13,5 +13,9 @@
             : base(message)
         {
         }
+
+        public NotificationHandlerIsNotConfiguredException()
+        {
+        }
     }
 }
