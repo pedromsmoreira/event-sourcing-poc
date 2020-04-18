@@ -11,7 +11,7 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-
+    using Microsoft.OpenApi.Models;
     using Newtonsoft.Json;
 
     using Swashbuckle.AspNetCore.Swagger;
@@ -35,16 +35,20 @@
             builder.AddApiExplorer();
             builder.AddFormatterMappings();
             builder.AddDataAnnotations();
-            builder.AddJsonFormatters();
-
-            builder.AddJsonOptions(settings =>
+            builder.AddNewtonsoftJson(options => 
             {
-                settings.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
             });
+            //builder.AddJsonFormatters();
+
+            //builder.AddJsonOptions(settings =>
+            //{
+            //    settings.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            //});
 
             services.AddSwaggerGen(opt =>
             {
-                opt.SwaggerDoc("v1", new Info
+                opt.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Event Sourcing PoC",
                     Version = "v1"
@@ -64,13 +68,11 @@
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseExceptionHandlingMiddleware();
 
             app.UseCorrelationId("es-id");
-
-            app.UseMvc();
 
             app.UseSwagger();
             app.UseSwaggerUI(opt =>
