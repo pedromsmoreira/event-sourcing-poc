@@ -48,6 +48,8 @@
 
         protected abstract void RegisterEventHandlers();
 
+        protected abstract void Applier(IDomainEvent @event);
+
         protected void RegisterEventHandler<TEvent>(Action<TEvent> eventHandler)
         {
             this.EventHandlers.Add(typeof(TEvent), (eh) => eventHandler((TEvent)eh));
@@ -60,9 +62,11 @@
 
         private void ApplyChangeEvent(IDomainEvent @event, bool isNew)
         {
-            var eventType = @event.GetType();
+            //var eventType = @event.GetType();
 
-            this.EventHandlers[eventType](@event);
+            //this.EventHandlers[eventType](@event);
+
+            this.Applier(@event);
 
             if (isNew)
             {

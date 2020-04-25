@@ -3,10 +3,25 @@
     using System;
 
     using Events;
-
+    using EventSourcing.Infrastructure.Events;
     using Shared;
 
-    public class User : AggregateRoot, INullObject
+    // https://stackoverflow.com/questions/9759141/overloading-in-java-and-multiple-dispatch
+
+    internal interface IEventApplier<TEvent> where TEvent : IDomainEvent
+    {
+        void Apply(TEvent @event);
+    }
+
+    internal interface IUserCreatedApplier : IEventApplier<UserCreated>
+    {
+    }
+
+    public class User : AggregateRoot, INullObject,
+        IUserCreatedApplier,
+        IEventApplier<UserJobChanged>,
+        IEventApplier<UserNameChanged>,
+        IEventApplier<UserDeleted>
     {
         public User(string name, string job)
         {
@@ -33,6 +48,8 @@
             this.RegisterEventHandler<UserNameChanged>(this.ProcessUserNameChanged);
             this.RegisterEventHandler<UserDeleted>(this.ProcessUserDeleted);
         }
+
+        protected override void Applier(IDomainEvent @event) => this.Apply((dynamic)@event);
 
         public void ChangeJob(string job)
         {
@@ -67,7 +84,21 @@
             this.IsDeleted = @event.IsDeleted;
         }
 
+        public void Apply(UserCreated @event)
+        {
+            this.Id = @event.UserId;
+            this.Name = @event.Username;
+            this.Job = @event.Job;
+            this.IsDeleted = @event.IsDeleted;
+        }
+
         protected void ProcessUserJobChanged(UserJobChanged @event)
+        {
+            this.Id = @event.UserId;
+            this.Job = @event.Job;
+        }
+
+        public void Apply(UserJobChanged @event)
         {
             this.Id = @event.UserId;
             this.Job = @event.Job;
@@ -79,7 +110,19 @@
             this.Name = @event.Name;
         }
 
+        public void Apply(UserNameChanged @event)
+        {
+            this.Id = @event.UserId;
+            this.Name = @event.Name;
+        }
+
         protected void ProcessUserDeleted(UserDeleted @event)
+        {
+            this.Id = @event.UserId;
+            this.IsDeleted = @event.IsDeleted;
+        }
+
+        public void Apply(UserDeleted @event)
         {
             this.Id = @event.UserId;
             this.IsDeleted = @event.IsDeleted;

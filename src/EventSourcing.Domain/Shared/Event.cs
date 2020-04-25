@@ -3,9 +3,9 @@
     using Infrastructure.Events;
     using Infrastructure.Shared;
 
-    public class Event : IDomainEvent
+    public abstract class Event : IDomainEvent
     {
-        public Event()
+        protected Event()
         {
             this.Timestamp = new Timestamp().UnixTimeEpochTimestamp;
         }
