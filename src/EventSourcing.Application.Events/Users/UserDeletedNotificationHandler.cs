@@ -1,4 +1,4 @@
-﻿namespace EventSourcing.Application.EventHandlers
+﻿namespace EventSourcing.Application.Events
 {
     using System.Threading.Tasks;
 

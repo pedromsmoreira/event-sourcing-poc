@@ -3,7 +3,6 @@
     using System;
 
     using Application.Commands.Users;
-    using Application.EventHandlers;
     using Application.Events.Users;
     using Application.Queries.Events;
     using Application.Queries.Search;
@@ -12,7 +11,7 @@
     using Configs;
 
     using CorrelationId;
-
+    using EventSourcing.Application.Events;
     using Mediator;
 
     using Microsoft.Extensions.Configuration;
@@ -24,7 +23,6 @@
     using Persistence.ElasticSearch.Users;
     using Persistence.Mongo;
     using Persistence.Mongo.EventStreamStore;
-    using Persistence.Mongo.Users;
 
     using Resolvers;
 

@@ -1,14 +1,13 @@
-﻿namespace EventSourcing.Application.EventHandlers
+﻿namespace EventSourcing.Application.Events
 {
     using System.Threading.Tasks;
 
     using Events.Users;
 
+    using EventSourcing.Application.Queries.Users;
+    using EventSourcing.Persistence.ElasticSearch.Users;
+
     using Infrastructure.Mediator;
-
-    using Persistence.ElasticSearch.Users;
-
-    using Queries.Users;
 
     public class UserUpdatedNotificationHandler : INotificationHandlerAsync<UserUpdatedV1>
     {
