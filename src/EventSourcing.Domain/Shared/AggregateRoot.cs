@@ -18,7 +18,6 @@
                 return;
             }
 
-            this.RegisterEventHandlers();
             this.registeredHandlers = true;
         }
 
@@ -46,7 +45,7 @@
             }
         }
 
-        protected abstract void RegisterEventHandlers();
+        protected abstract void Applier(IDomainEvent @event);
 
         protected void RegisterEventHandler<TEvent>(Action<TEvent> eventHandler)
         {
@@ -60,9 +59,7 @@
 
         private void ApplyChangeEvent(IDomainEvent @event, bool isNew)
         {
-            var eventType = @event.GetType();
-
-            this.EventHandlers[eventType](@event);
+            this.Applier(@event);
 
             if (isNew)
             {

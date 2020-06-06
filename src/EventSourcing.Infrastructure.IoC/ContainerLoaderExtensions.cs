@@ -3,7 +3,6 @@
     using System;
 
     using Application.Commands.Users;
-    using Application.EventHandlers;
     using Application.Events.Users;
     using Application.Queries.Events;
     using Application.Queries.Search;
@@ -12,7 +11,7 @@
     using Configs;
 
     using CorrelationId;
-
+    using EventSourcing.Application.Events;
     using Mediator;
 
     using Microsoft.Extensions.Configuration;
@@ -24,7 +23,6 @@
     using Persistence.ElasticSearch.Users;
     using Persistence.Mongo;
     using Persistence.Mongo.EventStreamStore;
-    using Persistence.Mongo.Users;
 
     using Resolvers;
 
@@ -68,7 +66,7 @@
         {
             services.AddScoped<IUsersQueryHandlerAsync, UsersQueryHandlerAsync>();
             services.AddScoped<IEventsQueryHandlerAsync, EventsQueryHandlerAsync>();
-            services.AddScoped<IUserCommandsProcessor, UsersCommandsProcessor>();
+            services.AddScoped<IUserCommandsProcessor, StoreAndPublishUsersCommandsProcessor>();
             services.AddScoped<ISearchQueryHandlerAsync, SearchQueryHandlerAsync>();
 
             return services;
@@ -79,9 +77,13 @@
             services.AddTransient<IDependencyResolver>(c => new AspNetCoreDependencyResolver(services));
 
             services.AddSingleton<IMediator, Mediator>();
+
+            // non messaging notification
             services.AddScoped<INotificationHandlerAsync<UserCreatedV1>, UserCreatedNotificationHandler>();
             services.AddScoped<INotificationHandlerAsync<UserDeletedV1>, UserDeletedNotificationHandler>();
             services.AddScoped<INotificationHandlerAsync<UserUpdatedV1>, UserUpdatedNotificationHandler>();
+
+            // messaging notification preparing for branching by abstraction
 
             return services;
         }

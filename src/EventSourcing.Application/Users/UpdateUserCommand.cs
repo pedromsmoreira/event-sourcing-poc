@@ -1,6 +1,7 @@
 ﻿namespace EventSourcing.Application.Commands.Users
 {
     using System;
+
     using Infrastructure.Commands;
 
     public class UpdateUserCommand : ICommand
@@ -20,8 +21,10 @@
             get => this.name;
             private set
             {
+                // validation should be placed in controller
                 if (string.IsNullOrWhiteSpace(value))
                 {
+                    // register event failure instead of Exception
                     throw new ArgumentException($"Name cannot be null or empty");
                 }
 
@@ -34,13 +37,15 @@
             get => this.job;
             private set
             {
+                // validation should be placed in controller
                 if (string.IsNullOrWhiteSpace(value))
                 {
+                    // register event failure instead of Exception
                     throw new ArgumentException("Job cannot be null or empty");
                 }
 
                 this.job = value;
-            }            
+            }
         }
 
         public Guid Id { get; private set; }

@@ -22,7 +22,7 @@
 
             var events = await this.eventStore.GetEventsForAggregate(query.Id).ConfigureAwait(false);
 
-            if (!events.Any())
+            if (events.Count == 0)
             {
                 return new NullUser();
             }

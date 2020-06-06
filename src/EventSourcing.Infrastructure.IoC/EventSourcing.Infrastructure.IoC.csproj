@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EventSourcing.Application.EventHandlers\EventSourcing.Application.EventHandlers.csproj" />
     <ProjectReference Include="..\EventSourcing.Application.Queries\EventSourcing.Application.Queries.csproj" />
     <ProjectReference Include="..\EventSourcing.Application\EventSourcing.Application.Commands.csproj" />
     <ProjectReference Include="..\EventSourcing.Infrastructure\EventSourcing.Infrastructure.csproj" />

@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EventSourcing.Application.Queries\EventSourcing.Application.Queries.csproj" />
     <ProjectReference Include="..\EventSourcing.Infrastructure\EventSourcing.Infrastructure.csproj" />
+    <ProjectReference Include="..\EventSourcing.Persistence.ElasticSearch\EventSourcing.Persistence.ElasticSearch.csproj" />
   </ItemGroup>
 
 </Project>

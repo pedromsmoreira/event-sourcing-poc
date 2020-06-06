@@ -4,9 +4,15 @@
 
     using Events;
 
+    using EventSourcing.Infrastructure.Events;
+
     using Shared;
 
-    public class User : AggregateRoot, INullObject
+    public class User : AggregateRoot, INullObject,
+        IEventApplier<UserCreated>,
+        IEventApplier<UserJobChanged>,
+        IEventApplier<UserNameChanged>,
+        IEventApplier<UserDeleted>
     {
         public User(string name, string job)
         {
@@ -26,13 +32,7 @@
 
         public bool IsDeleted { get; private set; }
 
-        protected override void RegisterEventHandlers()
-        {
-            this.RegisterEventHandler<UserCreated>(this.ProcessUserCreated);
-            this.RegisterEventHandler<UserJobChanged>(this.ProcessUserJobChanged);
-            this.RegisterEventHandler<UserNameChanged>(this.ProcessUserNameChanged);
-            this.RegisterEventHandler<UserDeleted>(this.ProcessUserDeleted);
-        }
+        protected override void Applier(IDomainEvent @event) => this.Apply((dynamic)@event);
 
         public void ChangeJob(string job)
         {
@@ -41,7 +41,10 @@
                 throw new ArgumentException();
             }
 
-            this.ApplyChange(new UserJobChanged(this.Id, job));
+            if (!job.Equals(this.Job, StringComparison.OrdinalIgnoreCase))
+            {
+                this.ApplyChange(new UserJobChanged(this.Id, job));
+            }
         }
 
         public void ChangeName(string name)
@@ -51,7 +54,10 @@
                 throw new ArgumentException();
             }
 
-            this.ApplyChange(new UserNameChanged(this.Id, name));
+            if (!name.Equals(this.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                this.ApplyChange(new UserNameChanged(this.Id, name));
+            }
         }
 
         public void MarkAsDeleted()
@@ -59,7 +65,7 @@
             this.ApplyChange(new UserDeleted(this.Id));
         }
 
-        protected void ProcessUserCreated(UserCreated @event)
+        public void Apply(UserCreated @event)
         {
             this.Id = @event.UserId;
             this.Name = @event.Username;
@@ -67,19 +73,19 @@
             this.IsDeleted = @event.IsDeleted;
         }
 
-        protected void ProcessUserJobChanged(UserJobChanged @event)
+        public void Apply(UserJobChanged @event)
         {
             this.Id = @event.UserId;
             this.Job = @event.Job;
         }
 
-        protected void ProcessUserNameChanged(UserNameChanged @event)
+        public void Apply(UserNameChanged @event)
         {
             this.Id = @event.UserId;
             this.Name = @event.Name;
         }
 
-        protected void ProcessUserDeleted(UserDeleted @event)
+        public void Apply(UserDeleted @event)
         {
             this.Id = @event.UserId;
             this.IsDeleted = @event.IsDeleted;

@@ -7,20 +7,19 @@
 
     using Events.Users;
 
-    using Infrastructure.Exceptions;
     using Infrastructure.Mediator;
 
     using Persistence.Mongo;
 
     using Queries.Users;
-    
-    public class UsersCommandsProcessor : IUserCommandsProcessor
+
+    public class StoreAndPublishUsersCommandsProcessor : IUserCommandsProcessor
     {
         private readonly IEventStore eventStore;
         private readonly IUsersQueryHandlerAsync queryHandlerAsync;
         private readonly IMediator mediator;
 
-        public UsersCommandsProcessor(
+        public StoreAndPublishUsersCommandsProcessor(
             IEventStore eventStore,
             IUsersQueryHandlerAsync queryHandlerAsync,
             IMediator mediator)
@@ -49,6 +48,9 @@
             user.MarkChangesAsCommited();
 
             // In the future change this to a queue like Kafka
+            // publish event to kafka
+
+            // move to consumer
             await this.mediator.NotifyAsync(userCreatedNotification).ConfigureAwait(false);
 
             return aggregateId;
@@ -58,7 +60,8 @@
         {
             var currentUserState = await this.queryHandlerAsync.HandleAsync(new GetUserByIdQuery(command.Id)).ConfigureAwait(false);
 
-            currentUserState.ApplyUpdate(command);
+            currentUserState.ChangeName(command.Name);
+            currentUserState.ChangeJob(command.Job);
 
             Guid.TryParse(currentUserState.Id, out var aggregateId);
 
@@ -71,10 +74,13 @@
                 Id = aggregateId,
                 Version = 1
             };
-            
+
             currentUserState.MarkChangesAsCommited();
 
             // In the future change this to a queue like Kafka
+            // publish event to kafka
+
+            // move to consumer
             await this.mediator.NotifyAsync(userUpdatedNotification).ConfigureAwait(false);
 
             return aggregateId;
@@ -96,6 +102,9 @@
             user.MarkChangesAsCommited();
 
             // In the future change this to a queue like Kafka
+            // publish event to kafka
+
+            // move to consumer
             await this.mediator.NotifyAsync(new UserDeletedV1 { Id = command.Id, Version = 1 }).ConfigureAwait(false);
         }
     }
