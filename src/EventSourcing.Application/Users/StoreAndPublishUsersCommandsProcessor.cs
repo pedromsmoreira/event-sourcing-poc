@@ -60,7 +60,8 @@
         {
             var currentUserState = await this.queryHandlerAsync.HandleAsync(new GetUserByIdQuery(command.Id)).ConfigureAwait(false);
 
-            currentUserState.ApplyUpdate(command);
+            currentUserState.ChangeName(command.Name);
+            currentUserState.ChangeJob(command.Job);
 
             Guid.TryParse(currentUserState.Id, out var aggregateId);
 
